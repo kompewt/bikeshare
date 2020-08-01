@@ -64,3 +64,4 @@ def run_simulation(p1, p2, num_steps):
 
 bikeshare = State(olin=10, wellesley=10, olin_empty=0, wellesley_empty=0, clock=0)
 run_simulation(0.6, 0.4, 60)
+
