@@ -17,7 +17,7 @@ def run_simulation(p1, p2, num_steps):
     for i in range(num_steps):
         wes = flip(p1)
         oli = flip(p2)
-        if wes & oli: # catch logical error with code order
+        if wes & oli:
             timeO[i] = bikeshare.olin
             timeW[i] = bikeshare.wellesley
             continue
