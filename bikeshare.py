@@ -17,26 +17,32 @@ def run_simulation(p1, p2, num_steps):
     for i in range(num_steps):
         wes = flip(p1)
         oli = flip(p2)
-        if wes & oli:
+        if wes == oli:
             timeO[i] = bikeshare.olin
             timeW[i] = bikeshare.wellesley
             continue
         if wes: # if bike from olin to wellesley
-            bikeshare.olin -= 1
-            bikeshare.wellesley += 1
-            if bikeshare.olin < 0: # catch -1 bikes = unhappy customer
-                bikeshare.olin += 1 # return olin to 0
+            if bikeshare.olin == 0: # catch -1 bikes = unhappy customer
                 bikeshare.olin_empty += 1 # count lost sales
-                bikeshare.wellesley -= 1 # no bike available for transfer
                 unhappy[i] = 0 # record time series of unhappy moments
                 if bikeshare.clock == 0: # if first unhappy customer
                     bikeshare.clock = i # record first unhappy moment
+                timeO[i] = bikeshare.olin
+                timeW[i] = bikeshare.wellesley
+                continue
+            bikeshare.olin -= 1
+            bikeshare.wellesley += 1
         if oli: # if bike from wellesley to olin
+            if bikeshare.wellesley == 0: # catch -1 bikes = unhappy customer
+                bikeshare.wellesley_empty += 1 # count lost sales
+                unhappy[i] = 0 # record time series of unhappy moments
+                if bikeshare.clock == 0: # if first unhappy customer
+                    bikeshare.clock = i # record first unhappy moment
+                timeO[i] = bikeshare.olin
+                timeW[i] = bikeshare.wellesley
+                continue
             bikeshare.olin += 1
             bikeshare.wellesley -= 1
-            if bikeshare.wellesley < 0: # catch -1 bikes = unhappy customer
-                bikeshare.wellesley += 1 # return wellesley to 0
-                bikeshare.wellesley_empty += 1 # count lost sales
         # Write bike states
         timeO[i] = bikeshare.olin
         timeW[i] = bikeshare.wellesley
