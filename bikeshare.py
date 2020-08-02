@@ -41,20 +41,21 @@ def run_simulation(p1, p2, num_steps):
         timeO[i] = bikeshare.olin
         timeW[i] = bikeshare.wellesley
 
-    # plot bike values and unhappy customers over time
-    plt.figure()
-    plt.plot(timeO, label='Olin')
-    plt.plot(timeW, label='Wellesley')
-    plt.scatter(unhappy.index, unhappy, color='red', label='Unhappy customer')
-    decorate(title='Olin-Wellesley Bikeshare',
-             xlabel='Time step (min)',
-             ylabel='Number of bikes')
-    plt.show()
-    # unhappy customer info
-    print(bikeshare.olin_empty)
-    print('unhappy customers')
-    print(bikeshare.clock)
-    print('minutes until the first unhappy customer')
+def sweep_p1(p1_array, p2, num_steps):
+    global bikeshare
+    for p1 in p1_array:
+        run_simulation(p1, p2, num_steps)
+        sweep_series[p1] = bikeshare.olin_empty
+        bikeshare = State(olin=10, wellesley=10, olin_empty=0, wellesley_empty=0, clock=0)
 
+sweep_series = SweepSeries()
+p1_array = linspace(0, 1, 10)
+p2 = 0.2
+num_steps = 60
 bikeshare = State(olin=10, wellesley=10, olin_empty=0, wellesley_empty=0, clock=0)
-run_simulation(0.6, 0.4, 60)
+sweep_p1(p1_array, p2, num_steps)
+plot(sweep_series, label='Olin')
+
+decorate(title='Olin-Wellesley Bikeshare',
+         xlabel='Arrival rate at Olin (p1 in customers/min)', 
+         ylabel='Number of unhappy customers')
